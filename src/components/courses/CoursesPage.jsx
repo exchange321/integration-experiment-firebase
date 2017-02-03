@@ -10,6 +10,7 @@ import equal from 'deep-equal';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as courseActions from '../../actions/courseAction';
+import * as topicActions from '../../actions/topicAction';
 
 import NavLink from '../common/NavLink.jsx';
 import ModalContainer from '../common/ModalContainer.jsx';
@@ -22,10 +23,10 @@ class CoursesPage extends Component {
     static propTypes = {
         route: PropTypes.shape({
             topicAPI: PropTypes.func.isRequired,
-        }),
+        }).isRequired,
         params: PropTypes.shape({
             topic: PropTypes.string,
-        }),
+        }).isRequired,
     };
 
     state = {
@@ -77,6 +78,11 @@ class CoursesPage extends Component {
                 topicId: nextTopicId,
                 courses: [],
             }, () => this.updateCoursesState(nextTopicId));
+        }
+        if (!equal(this.state.topics, nextProps.topics)) {
+            this.setState({
+                topics: nextProps.topics,
+            })
         }
         if (!equal(this.state.courses, nextProps.courses)) {
             this.setState({
@@ -380,6 +386,7 @@ class CoursesPage extends Component {
 const mapStateToProps = state => (
     {
         courses: state.courses,
+        topics: state.topics,
     }
 );
 

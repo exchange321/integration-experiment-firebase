@@ -7,7 +7,7 @@ import { Router, browserHistory } from 'react-router';
 import { Provider } from 'react-redux';
 import configureStore from './store/configureStore';
 import { loadTeachers } from './actions/teacherAction';
-import { loadCourses } from './actions/courseAction';
+import { loadTopics } from './actions/topicAction';
 
 import routes from './router.jsx';
 
@@ -21,6 +21,7 @@ require('bootstrap');
 
 const store = configureStore();
 store.dispatch(loadTeachers());
+store.dispatch(loadTopics());
 
 render(
     <Provider store={store}>
