@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { Button, ButtonGroup } from 'reactstrap';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import toastr from 'toastr';
+import equal from 'deep-equal';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -37,9 +38,11 @@ class TeachersPage extends Component {
     };
 
     componentWillReceiveProps(nextProps) {
-        this.setState({
-            teachers: nextProps.teachers,
-        });
+        if (!equal(this.state.teachers, nextProps.teachers)) {
+            this.setState({
+                teachers: nextProps.teachers,
+            });
+        }
     }
 
     editTeacher = (teacherId) => {
