@@ -5,6 +5,12 @@ import React, { Component, PropTypes } from 'react';
 import { Button, ButtonGroup } from 'reactstrap';
 import { browserHistory } from 'react-router';
 import toastr from 'toastr';
+import equal from 'deep-equal';
+
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import * as courseActions from '../../actions/courseAction';
+
 import NavLink from '../common/NavLink.jsx';
 import ModalContainer from '../common/ModalContainer.jsx';
 import CoursePage from './course/CoursePage.jsx';
@@ -72,6 +78,11 @@ class CoursesPage extends Component {
                 courses: [],
             }, () => this.updateCoursesState(nextTopicId));
         }
+        if (!equal(this.state.courses, nextProps.courses)) {
+            this.setState({
+                courses: nextProps.courses,
+            });
+        }
     }
 
     updateCoursesState = (topicId) => {
@@ -84,21 +95,7 @@ class CoursesPage extends Component {
                     courses: [],
                 });
             } else {
-                topicAPI.task(taskCommands.GET_COURSES_BY_TOPIC_ID, {
-                    topicId,
-                }).then((courses) => {
-                    if (courses) {
-                        this.setState({
-                            courses,
-                        });
-                    } else {
-                        browserHistory.push(`/courses/${routeTopicId}`);
-                        this.setState({
-                            topicId: routeTopicId,
-                        });
-                        this.updateCoursesState(routeTopicId);
-                    }
-                });
+                this.props.actions.loadCourses(topicId);
             }
         });
     };
@@ -380,4 +377,16 @@ class CoursesPage extends Component {
     }
 }
 
-export default CoursesPage;
+const mapStateToProps = state => (
+    {
+        courses: state.courses,
+    }
+);
+
+const mapDispatchToProps = dispatch => (
+    {
+        actions: bindActionCreators(courseActions, dispatch),
+    }
+);
+
+export default connect(mapStateToProps, mapDispatchToProps)(CoursesPage);

@@ -7,6 +7,7 @@ import { Router, browserHistory } from 'react-router';
 import { Provider } from 'react-redux';
 import configureStore from './store/configureStore';
 import { loadTeachers } from './actions/teacherAction';
+import { loadCourses } from './actions/courseAction';
 
 import routes from './router.jsx';
 
