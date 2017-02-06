@@ -20,9 +20,6 @@ import CourseForm from './CourseForm.jsx';
 
 class CoursesPage extends Component {
     static propTypes = {
-        route: PropTypes.shape({
-            topicAPI: PropTypes.func.isRequired,
-        }).isRequired,
         params: PropTypes.shape({
             topic: PropTypes.string,
         }).isRequired,

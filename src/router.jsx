@@ -14,7 +14,7 @@ export default (
         <Route path="/" component={HomePage} />
         <Route path="about" component={AboutPage} />
         <Route path="teachers" component={TeachersPage} />
-        <Route path="courses(/:topic)" component={CoursesPage} topicAPI={TopicAPI} />
+        <Route path="courses(/:topic)" component={CoursesPage} />
         <Redirect from="*" to="/" component={HomePage} />
     </Route>
 );
