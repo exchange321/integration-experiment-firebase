@@ -11,9 +11,9 @@ An experiment of integrating React, Redux, React Router, React Native, and Fireb
     
 ## Todos:
 * Core: 
-- [ ] Google Firebase Integration
-- [ ] React Native Integration
+    - [ ] Google Firebase Integration
+    - [ ] React Native Integration
     
 * Optional:
-- [ ] User Authentication
+    - [ ] User Authentication
     
