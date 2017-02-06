@@ -27,12 +27,18 @@ class CoursesPage extends Component {
         params: PropTypes.shape({
             topic: PropTypes.string,
         }).isRequired,
+        topicActions: PropTypes.shape({
+            saveTopic: PropTypes.func.isRequired,
+        }).isRequired,
+        courseActions: PropTypes.shape({
+            loadCourses: PropTypes.func.isRequired,
+        }).isRequired,
     };
 
     state = {
         topics: [],
         courses: [],
-        topicId: this.props.params.topic || '',
+        topicId: this.props.params.topic || null,
         modal: {
             editingTopicId: '',
             editingCourseId: '',
@@ -49,40 +55,27 @@ class CoursesPage extends Component {
     };
 
     componentDidMount() {
-        const topicAPI = this.props.route.topicAPI;
-        topicAPI.task(taskCommands.GET_ALL_TOPICS).then((topics) => {
-            this.setState({
-                topics,
-            }, () => {
-                let topicId = this.state.topicId;
-                if (!topicId) {
-                    topicAPI.task(taskCommands.GET_DEFAULT_TOPIC, {
-                        index: -1,
-                    }).then((newTopicId) => {
-                        topicId = newTopicId;
-                        browserHistory.push(`/courses/${topicId}`);
-                        this.setState({
-                            topicId,
-                        });
-                    });
-                }
-                this.updateCoursesState(topicId);
-            });
-        });
+        if (this.state.topicId) {
+            this.updateCoursesState(this.state.topicId);
+        }
     }
 
     componentWillReceiveProps(nextProps) {
-        const nextTopicId = nextProps.params.topic || '';
-        if (this.state.topicId !== nextTopicId) {
-            this.setState({
-                topicId: nextTopicId,
-                courses: [],
-            }, () => this.updateCoursesState(nextTopicId));
-        }
         if (!equal(this.state.topics, nextProps.topics)) {
             this.setState({
                 topics: nextProps.topics,
-            })
+            }, () => {
+                if (!this.state.topicId) {
+                    browserHistory.push(`/courses/${this.state.topics[0].id}`);
+                }
+            });
+        }
+        if (this.state.topicId !== nextProps.params.topic) {
+            const topicId = nextProps.params.topic;
+            this.setState({
+                topicId,
+            });
+            this.updateCoursesState(topicId);
         }
         if (!equal(this.state.courses, nextProps.courses)) {
             this.setState({
@@ -92,18 +85,7 @@ class CoursesPage extends Component {
     }
 
     updateCoursesState = (topicId) => {
-        const topicAPI = this.props.route.topicAPI;
-        topicAPI.task(taskCommands.GET_DEFAULT_TOPIC, {
-            index: -1,
-        }).then((routeTopicId) => {
-            if (topicId === '' && routeTopicId === '') {
-                this.setState({
-                    courses: [],
-                });
-            } else {
-                this.props.actions.loadCourses(topicId);
-            }
-        });
+        this.props.courseActions.loadCourses(topicId);
     };
 
     editTopic = (e, topicId = undefined) => {
@@ -211,35 +193,33 @@ class CoursesPage extends Component {
     topicFormSubmit = (e) => {
         e.preventDefault();
         $('.btn-topic-submit').prop('disabled', true).addClass('loading').text('Processing...');
-        const topicAPI = this.props.route.topicAPI;
-        topicAPI.task(taskCommands.SAVE_TOPIC, {
-            topic: this.state.modal.topic,
-        }).then(() => {
-            $('.btn-topic-submit').prop('disabled', false).removeClass('loading').text(this.state.modal.saveButtonText);
-            toastr.success('Topic Saved!');
-            this.toggleModal();
-        }, ({ msg }) => {
-            toastr.error('Something happened! Topic could not be saved!');
-            $('.btn-topic-submit').prop('disabled', false).removeClass('loading').text(this.state.modal.saveButtonText);
-            const bodyContent = React.cloneElement(
-                this.state.modalSettings.modalContent.bodyContent, {
-                    errors: msg,
-                },
-            );
-            this.setState({
-                modal: {
-                    ...this.state.modal,
-                    errors: msg,
-                },
-                modalSettings: {
-                    ...this.state.modalSettings,
-                    modalContent: {
-                        ...this.state.modalSettings.modalContent,
-                        bodyContent,
+        this.props.topicActions.saveTopic(this.state.modal.topic)
+            .then(() => {
+                $('.btn-topic-submit').prop('disabled', false).removeClass('loading').text(this.state.modal.saveButtonText);
+                toastr.success('Topic Saved!');
+                this.toggleModal();
+            }, ({ msg }) => {
+                toastr.error('Something happened! Topic could not be saved!');
+                $('.btn-topic-submit').prop('disabled', false).removeClass('loading').text(this.state.modal.saveButtonText);
+                const bodyContent = React.cloneElement(
+                    this.state.modalSettings.modalContent.bodyContent, {
+                        errors: msg,
                     },
-                },
+                );
+                this.setState({
+                    modal: {
+                        ...this.state.modal,
+                        errors: msg,
+                    },
+                    modalSettings: {
+                        ...this.state.modalSettings,
+                        modalContent: {
+                            ...this.state.modalSettings.modalContent,
+                            bodyContent,
+                        },
+                    },
+                });
             });
-        });
     };
 
     editCourse = (e, topicId, course = undefined) => {
@@ -392,7 +372,8 @@ const mapStateToProps = state => (
 
 const mapDispatchToProps = dispatch => (
     {
-        actions: bindActionCreators(courseActions, dispatch),
+        topicActions: bindActionCreators(topicActions, dispatch),
+        courseActions: bindActionCreators(courseActions, dispatch),
     }
 );
 

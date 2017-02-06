@@ -20,4 +20,10 @@ export const loadTopics = () => (
     )
 );
 
+export const saveTopic = topic => (
+    () => (
+        topicAPI.task(actionTypes.SAVE_TOPIC, { topic })
+    )
+);
+
 export default {};
