@@ -29,16 +29,18 @@ class CoursesPage extends Component {
         }).isRequired,
         topicActions: PropTypes.shape({
             saveTopic: PropTypes.func.isRequired,
+            deleteTopic: PropTypes.func.isRequired,
         }).isRequired,
         courseActions: PropTypes.shape({
             loadCourses: PropTypes.func.isRequired,
+            emptyCourses: PropTypes.func.isRequired,
         }).isRequired,
     };
 
     state = {
         topics: [],
         courses: [],
-        topicId: this.props.params.topic || null,
+        topicId: this.props.params.topic || undefined,
         modal: {
             editingTopicId: '',
             editingCourseId: '',
@@ -66,16 +68,22 @@ class CoursesPage extends Component {
                 topics: nextProps.topics,
             }, () => {
                 if (!this.state.topicId) {
-                    browserHistory.push(`/courses/${this.state.topics[0].id}`);
+                    if (this.state.topics.length > 0) {
+                        browserHistory.push(`/courses/${this.state.topics[0].id}`);
+                    }
                 }
             });
         }
         if (this.state.topicId !== nextProps.params.topic) {
-            const topicId = nextProps.params.topic;
+            const topicId = nextProps.params.topic || undefined;
             this.setState({
                 topicId,
             });
-            this.updateCoursesState(topicId);
+            if (topicId) {
+                this.updateCoursesState(topicId);
+            } else {
+                this.props.courseActions.emptyCourses();
+            }
         }
         if (!equal(this.state.courses, nextProps.courses)) {
             this.setState({
@@ -136,19 +144,14 @@ class CoursesPage extends Component {
 
     deleteTopic = (topicId) => {
         $('.btn-topic-delete').prop('disabled', true).addClass('loading').text('Processing...');
-        const topicAPI = this.props.route.topicAPI;
-        topicAPI.task(taskCommands.DELETE_TOPIC, {
-            id: topicId,
-        }).then((routeTopicId) => {
-            this.setState({
-                courses: [],
-            }, () => {
+        this.props.topicActions.deleteTopic(topicId)
+            .then((routeTopicId) => {
+                this.props.courseActions.emptyCourses();
                 $('.btn-topic-delete').prop('disabled', false).removeClass('loading').text('Delete Topic');
                 toastr.success('Topic Deleted!');
                 browserHistory.push(`/courses/${routeTopicId}`);
                 this.toggleModal();
             });
-        });
     };
 
     toggleModal = () => {

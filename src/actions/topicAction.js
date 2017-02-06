@@ -26,4 +26,10 @@ export const saveTopic = topic => (
     )
 );
 
+export const deleteTopic = id => (
+    () => (
+        topicAPI.task(actionTypes.DELETE_TOPIC, { id })
+    )
+);
+
 export default {};

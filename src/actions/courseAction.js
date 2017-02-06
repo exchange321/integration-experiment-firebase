@@ -20,4 +20,10 @@ export const loadCourses = topicId => (
     )
 );
 
+export const emptyCourses = () => (
+    {
+        type: actionTypes.EMPTY_COURSES,
+    }
+);
+
 export default {};

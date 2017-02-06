@@ -12,6 +12,7 @@ const actionTypes = {
     SAVE_TOPIC: 'SAVE_TOPIC',
     SAVE_COURSE_BY_TOPIC_ID: 'SAVE_COURSE_BY_TOPIC_ID',
     DELETE_COURSE_BY_TOPIC_ID: 'DELETE_COURSE_BY_TOPIC_ID',
+    EMPTY_COURSES: 'EMPTY_COURSES',
 };
 
 export default actionTypes;

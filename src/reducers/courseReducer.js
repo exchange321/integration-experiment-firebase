@@ -9,6 +9,9 @@ const teacherReducer = (state = initialState.courses, action) => {
         case actionTypes.GET_COURSES_BY_TOPIC_ID: {
             return action.courses;
         }
+        case actionTypes.EMPTY_COURSES: {
+            return [];
+        }
         default: {
             return state;
         }
