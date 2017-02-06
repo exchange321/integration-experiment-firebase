@@ -26,4 +26,16 @@ export const emptyCourses = () => (
     }
 );
 
+export const saveCourse = (id, course) => (
+    () => (
+        topicAPI.task(actionTypes.SAVE_COURSE_BY_TOPIC_ID, { id, course })
+    )
+);
+
+export const deleteCourse = (id, courseId) => (
+    () => (
+        topicAPI.task(actionTypes.DELETE_COURSE_BY_TOPIC_ID, { id, courseId })
+    )
+);
+
 export default {};

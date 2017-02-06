@@ -17,7 +17,6 @@ import ModalContainer from '../common/ModalContainer.jsx';
 import CoursePage from './course/CoursePage.jsx';
 import TopicForm from './TopicForm.jsx';
 import CourseForm from './CourseForm.jsx';
-import taskCommands from '../../api/taskCommands';
 
 class CoursesPage extends Component {
     static propTypes = {
@@ -34,6 +33,8 @@ class CoursesPage extends Component {
         courseActions: PropTypes.shape({
             loadCourses: PropTypes.func.isRequired,
             emptyCourses: PropTypes.func.isRequired,
+            saveCourse: PropTypes.func.isRequired,
+            deleteCourse: PropTypes.func.isRequired,
         }).isRequired,
     };
 
@@ -282,51 +283,45 @@ class CoursesPage extends Component {
     courseFormSubmit = (e) => {
         e.preventDefault();
         $('.btn-course-submit').prop('disabled', true).addClass('loading').text('Processing...');
-        const topicAPI = this.props.route.topicAPI;
-        topicAPI.task(taskCommands.SAVE_COURSE_BY_TOPIC_ID, {
-            id: this.state.modal.topicId,
-            course: this.state.modal.course,
-        }).then(() => {
-            $('.btn-course-submit').prop('disabled', false).removeClass('loading').text(this.state.modal.saveButtonText);
-            toastr.success('Course Saved!');
-            this.toggleModal();
-        }, ({ msg }) => {
-            $('.btn-course-submit').prop('disabled', false).removeClass('loading').text(this.state.modal.saveButtonText);
-            toastr.error('Something happened! Course could not be saved!');
-            const bodyContent = React.cloneElement(
-                this.state.modalSettings.modalContent.bodyContent, {
-                    errors: msg,
-                },
-            );
-            this.setState({
-                modal: {
-                    ...this.state.modal,
-                    errors: msg,
-                },
-                modalSettings: {
-                    ...this.state.modalSettings,
-                    modalContent: {
-                        ...this.state.modalSettings.modalContent,
-                        bodyContent,
+        this.props.courseActions.saveCourse(this.state.modal.topicId, this.state.modal.course)
+            .then(() => {
+                $('.btn-course-submit').prop('disabled', false).removeClass('loading').text(this.state.modal.saveButtonText);
+                toastr.success('Course Saved!');
+                this.toggleModal();
+            }, ({ msg }) => {
+                $('.btn-course-submit').prop('disabled', false).removeClass('loading').text(this.state.modal.saveButtonText);
+                toastr.error('Something happened! Course could not be saved!');
+                const bodyContent = React.cloneElement(
+                    this.state.modalSettings.modalContent.bodyContent, {
+                        errors: msg,
                     },
-                },
+                );
+                this.setState({
+                    modal: {
+                        ...this.state.modal,
+                        errors: msg,
+                    },
+                    modalSettings: {
+                        ...this.state.modalSettings,
+                        modalContent: {
+                            ...this.state.modalSettings.modalContent,
+                            bodyContent,
+                        },
+                    },
+                });
             });
-        });
     };
 
     deleteCourse = (topicId, courseId) => {
         $('.btn-course-delete').prop('disabled', true).addClass('loading').text('Processing...');
-        const topicAPI = this.props.route.topicAPI;
-        topicAPI.task(taskCommands.DELETE_COURSE_BY_TOPIC_ID, {
-            id: topicId,
-            courseId,
-        }).then((errMsg) => {
-            if (!errMsg.error) {
-                $('.btn-course-delete').prop('disabled', false).removeClass('loading').text('Delete Course');
-                toastr.success('Course Deleted!');
-                this.toggleModal();
-            }
-        });
+        this.props.courseActions.deleteCourse(topicId, courseId)
+            .then((errMsg) => {
+                if (!errMsg.error) {
+                    $('.btn-course-delete').prop('disabled', false).removeClass('loading').text('Delete Course');
+                    toastr.success('Course Deleted!');
+                    this.toggleModal();
+                }
+            });
     };
 
     render() {

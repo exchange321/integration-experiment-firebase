@@ -9,4 +9,4 @@ NavLink.propTypes = {
     children: PropTypes.string.isRequired,
 };
 
-module.exports = NavLink;
+export default NavLink;
