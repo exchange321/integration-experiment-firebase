@@ -2,7 +2,8 @@ import React from 'react';
 
 const HomePage = () => (
     <div className="main-content home">
-        <h2>Redux Exercise</h2>
+        <h2>Integration Experiment - Firebase</h2>
+        <h3>React + Redux + React Native + Firebase</h3>
         <p>
             Lorem ipsum dolor sit amet, consectetur
             adipisicing elit. Accusamus corporis earum

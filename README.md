@@ -2,7 +2,8 @@
 An experiment of integrating React, Redux, React Router, React Native, and Firebase.
 
 ## Current Status:
-* Redux integration (Local) completed
+* Transfer TeacherAPI to Google Firebase entirely
+* Transfer all local states in TeacherPage to Redux entirely
     
 ## Finished:
 - [x] Initialization
