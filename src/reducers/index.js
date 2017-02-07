@@ -4,11 +4,13 @@
 import { combineReducers } from 'redux';
 import { firebaseStateReducer } from 'react-redux-firebase';
 import teacherPage from './teacherReducer';
+import notification from './notificationReducer';
 import courses from './courseReducer';
 import topics from './topicReducer';
 
 const rootReducer = combineReducers({
     teacherPage,
+    notification,
     courses,
     topics,
     firebase: firebaseStateReducer,

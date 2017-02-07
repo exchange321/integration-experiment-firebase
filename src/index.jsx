@@ -20,7 +20,6 @@ window.Tether = require('tether');
 require('bootstrap');
 
 const store = configureStore();
-store.dispatch(loadTopics());
 
 render(
     <Provider store={store}>

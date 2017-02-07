@@ -2,7 +2,6 @@ import React, { Component, PropTypes } from 'react';
 import { Button, ButtonGroup } from 'reactstrap';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import toastr from 'toastr';
-import equal from 'deep-equal';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -51,16 +50,10 @@ class TeachersPage extends Component {
             ).isRequired,
         }).isRequired,
         editingTeacherId: PropTypes.string.isRequired,
-        notification: PropTypes.shape({
-            hasNotification: PropTypes.bool.isRequired,
-            type: PropTypes.string.isRequired,
-            msg: PropTypes.string.isRequired,
-        }).isRequired,
         actions: PropTypes.shape({
             showForm: PropTypes.func.isRequired,
             hideForm: PropTypes.func.isRequired,
             handleFormFieldChange: PropTypes.func.isRequired,
-            resetNotification: PropTypes.func.isRequired,
             saveTeacher: PropTypes.func.isRequired,
             deleteTeacher: PropTypes.func.isRequired,
         }).isRequired,
@@ -69,27 +62,6 @@ class TeachersPage extends Component {
     static defaultProps = {
         teachers: {},
     };
-
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.notification.hasNotification) {
-            const { type, msg } = nextProps.notification;
-            switch (type) {
-                case 'success': {
-                    toastr.success(msg);
-                    break;
-                }
-                case 'error': {
-                    toastr.error(msg);
-                    break;
-                }
-                default: {
-                    toastr.info(msg);
-                    break;
-                }
-            }
-            this.props.actions.resetNotification();
-        }
-    }
 
     showForm = (teacherId = null) => {
         if (teacherId) {

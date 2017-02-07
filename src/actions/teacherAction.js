@@ -2,6 +2,7 @@
  * Created by Wayuki on 03-Feb-17 0003.
  */
 import { TEACHER_ACTION_TYPES } from './actionTypes';
+import { setNotification } from './notificationAction';
 import * as helpers from '../helpers/helpers';
 
 const processingSaveTeacher = isSavingTeacher => ({
@@ -12,12 +13,6 @@ const processingSaveTeacher = isSavingTeacher => ({
 const processingDeleteTeacher = isDeletingTeacher => ({
     type: TEACHER_ACTION_TYPES.PROCESSING_DELETE_TEACHER,
     isDeletingTeacher,
-});
-
-const setNotification = (nocType, msg) => ({
-    type: TEACHER_ACTION_TYPES.SET_NOTIFICATION,
-    nocType,
-    msg,
 });
 
 const setErrorMessage = msg => ({
@@ -52,10 +47,6 @@ export const handleFormFieldChange = (key, value) => (
         value,
     }
 );
-
-export const resetNotification = () => ({
-    type: TEACHER_ACTION_TYPES.RESET_NOTIFICATION,
-});
 
 export const saveTeacher = () => (
     (dispatch, getState, getFirebase) => {

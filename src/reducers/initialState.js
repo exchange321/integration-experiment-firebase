@@ -17,12 +17,12 @@ export default {
             isDeletingTeacher: false,
         },
         editingTeacherId: '',
-        notification: {
-            hasNotification: false,
-            type: '',
-            msg: '',
-        },
     },
+    notification: {
+        hasNotification: false,
+        type: '',
+        msg: '',
+    },
+    topicPage: {},
     courses: [],
-    topics: [],
 };
