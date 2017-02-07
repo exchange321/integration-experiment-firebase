@@ -115,38 +115,6 @@ class TeachersPage extends Component {
         this.props.actions.deleteTeacher();
     };
 
-    // teacherFormSubmit = (e) => {
-    //     e.preventDefault();
-    //     $('.btn-teacher-submit').prop('disabled', true).addClass('loading').text('Processing...');
-    //     this.props.actions.saveTeacher(this.state.modal.teacher, this.state.editingTeacherId)
-    //         .then(() => {
-    //             toastr.success('Teacher saved!');
-    //             $('.btn-teacher-submit').prop('disabled', false).removeClass('loading').text(this.state.modal.saveButtonText);
-    //             this.toggleModal();
-    //         }).catch(() => {
-    //             toastr.error('Something happened! Teacher could not be saved!');
-    //             $('.btn-teacher-submit').prop('disabled', false).removeClass('loading').text(this.state.modal.saveButtonText);
-    //             this.setState({
-    //                 modal: {
-    //                     ...this.state.modal,
-    //                     errors: msg,
-    //                 },
-    //             });
-    //         })
-    // };
-
-    // deleteTeacher = (teacherId) => {
-    //     $('.btn-teacher-delete').prop('disabled', true).addClass('loading').text('Processing...');
-    //     this.props.actions.deleteTeacher(teacherId)
-    //         .then((errMsg) => {
-    //             if (!errMsg.error) {
-    //                 toastr.success('Teacher deleted!');
-    //                 $('.btn-teacher-delete').prop('disabled', false).removeClass('loading').text('Delete Teacher');
-    //                 this.toggleModal();
-    //             }
-    //         });
-    // };
-
     renderFormSubmitButton = () => {
         const { modal: { saveButtonText, isSavingTeacher } } = this.props;
         return isSavingTeacher ? (
@@ -211,7 +179,9 @@ class TeachersPage extends Component {
                         transitionAppearTimeout={500}
                     >
                         {
-                            isLoaded(teachers) && Object.keys(teachers).map((teacherId) => {
+                            isLoaded(teachers) &&
+                            !isEmpty(teachers) &&
+                            Object.keys(teachers).map((teacherId) => {
                                 const teacher = teachers[teacherId];
                                 return (
                                     <Teacher
