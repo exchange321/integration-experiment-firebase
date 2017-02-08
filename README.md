@@ -1,4 +1,4 @@
-# integration_experiment_firebase
+# Integration Experiment (Firebase)
 An experiment of integrating React, Redux, React Router, React Native, and Firebase.
 
 ## Current Status:
