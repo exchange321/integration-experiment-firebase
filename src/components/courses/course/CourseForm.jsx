@@ -1,8 +1,9 @@
 import React, { PropTypes } from 'react';
-import TextInput from '../common/TextInput.jsx';
-import TextArea from '../common/TextArea.jsx';
+import TextInput from '../../common/TextInput.jsx';
+import TextArea from '../../common/TextArea.jsx';
+import SelectInput from '../../common/SelectInput.jsx';
 
-const CourseForm = ({ title, description, img_src, onChange, errors }) => {
+const CourseForm = ({ title, description, img_src, topics, topic, onChange, errors }) => {
     const errorElement = Object.keys(errors);
     return (
         <div className="form-container">
@@ -41,6 +42,20 @@ const CourseForm = ({ title, description, img_src, onChange, errors }) => {
                 onChange={onChange}
                 errorMsg={errorElement.includes('img_src') ? errors.img_src : ''}
             />
+            <SelectInput
+                containerClass="form-group"
+                label="Topic"
+                name="topic"
+                id="form-topic"
+                className="form-control"
+                options={Object.keys(topics).map(topicId => ({
+                    value: topicId,
+                    text: topics[topicId].name,
+                }))}
+                value={topic}
+                onChange={onChange}
+                errorMsg={errorElement.includes('topic') ? errors.topic : ''}
+            />
         </div>
     );
 };
@@ -49,8 +64,14 @@ CourseForm.propTypes = {
     title: PropTypes.string.isRequired,
     description: PropTypes.string.isRequired,
     img_src: PropTypes.string.isRequired,
+    topics: PropTypes.objectOf(PropTypes.shape({
+        name: PropTypes.string.isRequired,
+    }).isRequired),
+    topic: PropTypes.string.isRequired,
     onChange: PropTypes.func.isRequired,
-    errors: PropTypes.object.isRequired,
+    errors: PropTypes.objectOf(
+        PropTypes.string,
+    ).isRequired,
 };
 
 export default CourseForm;

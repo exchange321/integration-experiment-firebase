@@ -10,6 +10,7 @@ import { bindActionCreators } from 'redux';
 import { firebaseConnect, helpers } from 'react-redux-firebase';
 
 import * as topicActions from '../../actions/topicAction';
+import { showForm } from '../../actions/courseAction';
 
 import NavLink from '../common/NavLink.jsx';
 import ModalContainer from '../common/ModalContainer.jsx';
@@ -27,6 +28,7 @@ const { isLoaded, isEmpty, dataToJS } = helpers;
     }),
     dispatch => ({
         actions: bindActionCreators(topicActions, dispatch),
+        courseActions: bindActionCreators({ showForm }, dispatch),
     }),
 )
 class CoursesPage extends Component {
@@ -59,6 +61,9 @@ class CoursesPage extends Component {
             handleFormFieldChange: PropTypes.func.isRequired,
             saveTopic: PropTypes.func.isRequired,
             deleteTopic: PropTypes.func.isRequired,
+        }).isRequired,
+        courseActions: PropTypes.shape({
+            showForm: PropTypes.func.isRequired,
         }).isRequired,
     };
 
@@ -145,7 +150,7 @@ class CoursesPage extends Component {
     };
 
     render() {
-        const { topics, children, editing, modal, actions } = this.props;
+        const { topics, children, editing, modal, actions, courseActions } = this.props;
         return (
             <div className="main-content courses">
                 <div className="course-header clearfix">
@@ -163,14 +168,36 @@ class CoursesPage extends Component {
                         <li className="add-topic"><a href="/" onClick={e => this.showForm(e)}>+ Add Topic</a></li>
                     </ul>
                 </div>
+                { React.cloneElement(children, { topics }) }
                 <div className="btn-container text-right">
                     <ButtonGroup>
-                        { isLoaded(topics) && this.props.params.topic && (
-                            <Button onClick={e => this.showForm(e, this.props.params.topic)} type="button" outline color="primary">Edit Topic</Button>
-                        ) }
+                        {
+                            isLoaded(topics) &&
+                            this.props.params.topic &&
+                            Object.keys(topics).includes(this.props.params.topic) &&
+                            <Button
+                                onClick={e => this.showForm(e, this.props.params.topic)}
+                                type="button"
+                                outline
+                                color="primary"
+                            >
+                                Edit Topic
+                            </Button>
+                        }
+                        {
+                            isLoaded(topics) &&
+                            !isEmpty(topics) &&
+                            Object.keys(topics).length > 0 &&
+                            <Button
+                                onClick={e => courseActions.showForm()}
+                                type="button"
+                                color="primary"
+                            >
+                                Add Course
+                            </Button>
+                        }
                     </ButtonGroup>
                 </div>
-                { children }
                 <ModalContainer
                     isOpen={editing}
                     toggle={actions.hideForm}

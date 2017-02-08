@@ -43,5 +43,21 @@ export default {
         },
         editingTopicId: '',
     },
-    courses: [],
+    coursePage: {
+        editing: false,
+        modal: {
+            modalTitle: 'New Course',
+            saveButtonText: 'Add Course',
+            course: {
+                title: '',
+                description: '',
+                img_src: '',
+                topic: '',
+            },
+            errors: {},
+            isSavingCourse: false,
+            isDeletingCourse: false,
+        },
+        editingCourseId: '',
+    },
 };
