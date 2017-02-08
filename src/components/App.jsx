@@ -1,15 +1,16 @@
 import React, { Component, PropTypes } from 'react';
 import toastr from 'toastr';
+import { browserHistory } from 'react-router';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import * as notificationActions from '../actions/notificationAction';
+import * as notificationActions from '../actions/appAction';
 
 import NavLink from './common/NavLink.jsx';
 
 @connect(
-    ({ notification }) => ({
-        notification,
+    ({ appPage }) => ({
+        ...appPage,
     }),
     dispatch => ({
         actions: bindActionCreators(notificationActions, dispatch),
@@ -24,8 +25,13 @@ class App extends Component {
             type: PropTypes.string.isRequired,
             msg: PropTypes.string.isRequired,
         }).isRequired,
+        redirect: PropTypes.shape({
+            hasRedirect: PropTypes.bool.isRequired,
+            uri: PropTypes.string.isRequired,
+        }).isRequired,
         actions: PropTypes.shape({
             resetNotification: PropTypes.func.isRequired,
+            resetRedirect: PropTypes.func.isRequired,
         }).isRequired,
     };
 
@@ -47,6 +53,11 @@ class App extends Component {
                 }
             }
             this.props.actions.resetNotification();
+        }
+        if (nextProps.redirect.hasRedirect) {
+            const { uri } = nextProps.redirect;
+            browserHistory.push(uri);
+            this.props.actions.resetRedirect();
         }
     }
 

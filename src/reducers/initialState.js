@@ -18,11 +18,30 @@ export default {
         },
         editingTeacherId: '',
     },
-    notification: {
-        hasNotification: false,
-        type: '',
-        msg: '',
+    appPage: {
+        notification: {
+            hasNotification: false,
+            type: '',
+            msg: '',
+        },
+        redirect: {
+            hasRedirect: false,
+            uri: '',
+        },
     },
-    topicPage: {},
+    coursesPage: {
+        editing: false,
+        modal: {
+            modalTitle: 'New Topic',
+            saveButtonText: 'Add Topic',
+            topic: {
+                name: '',
+            },
+            errors: {},
+            isSavingTopic: false,
+            isDeletingTopic: false,
+        },
+        editingTopicId: '',
+    },
     courses: [],
 };

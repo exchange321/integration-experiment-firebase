@@ -2,7 +2,7 @@
  * Created by Wayuki on 03-Feb-17 0003.
  */
 import { TEACHER_ACTION_TYPES } from './actionTypes';
-import { setNotification } from './notificationAction';
+import { setNotification } from './appAction';
 import * as helpers from '../helpers/helpers';
 
 const processingSaveTeacher = isSavingTeacher => ({
@@ -20,19 +20,22 @@ const setErrorMessage = msg => ({
     msg,
 });
 
-export const showForm = (teacher = {
-    name: '',
-    bio: '',
-    img_src: '',
-}, modalTitle = 'New Teacher', saveButtonText = 'Add Teacher', editingTeacherId = '') => (
-    {
-        type: TEACHER_ACTION_TYPES.SHOW_FORM,
-        teacher,
-        modalTitle,
-        saveButtonText,
-        editingTeacherId,
-    }
-);
+export const showForm = (
+    teacher = {
+        name: '',
+        bio: '',
+        img_src: '',
+    },
+    modalTitle = 'New Teacher',
+    saveButtonText = 'Add Teacher',
+    editingTeacherId = '',
+) => ({
+    type: TEACHER_ACTION_TYPES.SHOW_FORM,
+    teacher,
+    modalTitle,
+    saveButtonText,
+    editingTeacherId,
+});
 
 export const hideForm = () => (
     {

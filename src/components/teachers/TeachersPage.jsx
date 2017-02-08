@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { Button, ButtonGroup } from 'reactstrap';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-import toastr from 'toastr';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -35,7 +34,7 @@ class TeachersPage extends Component {
             name: PropTypes.string.isRequired,
             bio: PropTypes.string.isRequired,
             img_src: PropTypes.string.isRequired,
-        })).isRequired,
+        }).isRequired),
         editing: PropTypes.bool.isRequired,
         modal: PropTypes.shape({
             modalTitle: PropTypes.string.isRequired,
@@ -60,7 +59,7 @@ class TeachersPage extends Component {
     };
 
     static defaultProps = {
-        teachers: {},
+        teachers: undefined,
     };
 
     showForm = (teacherId = null) => {
