@@ -3,6 +3,8 @@
  */
 import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
+import { browserHistory } from 'react-router';
+import { routerMiddleware } from 'react-router-redux';
 import { reactReduxFirebase, getFirebase } from 'react-redux-firebase';
 
 import rootReducer from '../reducers';
@@ -13,7 +15,7 @@ const configureStore = initialState => (
         rootReducer,
         initialState,
         compose(
-            applyMiddleware(thunk.withExtraArgument(getFirebase)),
+            applyMiddleware(thunk.withExtraArgument(getFirebase), routerMiddleware(browserHistory)),
             reactReduxFirebase(fbConfig, { userProfile: 'users', enableLogging: false }),
         ),
     )

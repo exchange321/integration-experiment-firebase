@@ -60,4 +60,11 @@ export default {
         },
         editingCourseId: '',
     },
+    loginPage: {
+        credential: {
+            email: '',
+            password: '',
+        },
+        isLoggingIn: false,
+    },
 };

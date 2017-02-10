@@ -168,7 +168,7 @@ class CoursesPage extends Component {
                         <li className="add-topic"><a href="/" onClick={e => this.showForm(e)}>+ Add Topic</a></li>
                     </ul>
                 </div>
-                { React.cloneElement(children, { topics }) }
+                { children && React.cloneElement(children, { topics }) }
                 <div className="btn-container text-right">
                     <ButtonGroup>
                         {

@@ -1,10 +1,12 @@
 import React, { Component, PropTypes } from 'react';
 import toastr from 'toastr';
-import { browserHistory } from 'react-router';
+import { routerActions } from 'react-router-redux';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import * as notificationActions from '../actions/appAction';
+
+import { VisibleToUser, VisibleToGuest } from '../auth/auth';
 
 import NavLink from './common/NavLink.jsx';
 
@@ -14,12 +16,13 @@ import NavLink from './common/NavLink.jsx';
     }),
     dispatch => ({
         actions: bindActionCreators(notificationActions, dispatch),
+        routerActions: bindActionCreators(routerActions, dispatch),
     }),
 )
 class App extends Component {
 
     static propTypes = {
-        children: PropTypes.node.isRequired,
+        children: PropTypes.node,
         notification: PropTypes.shape({
             hasNotification: PropTypes.bool.isRequired,
             type: PropTypes.string.isRequired,
@@ -33,6 +36,13 @@ class App extends Component {
             resetNotification: PropTypes.func.isRequired,
             resetRedirect: PropTypes.func.isRequired,
         }).isRequired,
+        routerActions: PropTypes.shape({
+            push: PropTypes.func.isRequired,
+        }).isRequired,
+    };
+
+    static defaultProps = {
+        children: (<div />),
     };
 
     componentWillReceiveProps(nextProps) {
@@ -56,7 +66,7 @@ class App extends Component {
         }
         if (nextProps.redirect.hasRedirect) {
             const { uri } = nextProps.redirect;
-            browserHistory.push(uri);
+            this.props.routerActions.push(uri);
             this.props.actions.resetRedirect();
         }
     }
@@ -71,6 +81,8 @@ class App extends Component {
                         <li><NavLink to="/about">About</NavLink></li>
                         <li><NavLink to="/teachers">Teachers</NavLink></li>
                         <li><NavLink to="/courses">Courses</NavLink></li>
+                        { React.createElement(VisibleToGuest(() => <li><NavLink to="/login">Login</NavLink></li>)) }
+                        { React.createElement(VisibleToUser(() => <li><NavLink to="/logout">Logout</NavLink></li>)) }
                     </ul>
                 </header>
                 { this.props.children }

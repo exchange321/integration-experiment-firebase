@@ -2,14 +2,11 @@
 import 'babel-polyfill';
 import React from 'react';
 import { render } from 'react-dom';
-import { Router, browserHistory } from 'react-router';
 
 import { Provider } from 'react-redux';
 import configureStore from './store/configureStore';
-import { loadTeachers } from './actions/teacherAction';
-import { loadTopics } from './actions/topicAction';
 
-import routes from './router.jsx';
+import AppRouter from './router.jsx';
 
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import '../node_modules/toastr/build/toastr.min.css';
@@ -23,7 +20,7 @@ const store = configureStore();
 
 render(
     <Provider store={store}>
-        <Router history={browserHistory} routes={routes} />
+        <AppRouter store={store} />
     </Provider>,
     document.querySelector('#app'),
 );
