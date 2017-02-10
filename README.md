@@ -2,7 +2,7 @@
 An experiment of integrating React, Redux, React Router, React Native, and Firebase.
 
 ## Current Status:
-* Finished Google Firebase Integration (React Web)
+* Finished User Authentication (Firebase + React Web)
     
 ## Finished:
 - [x] Initialization
