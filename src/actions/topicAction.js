@@ -1,8 +1,9 @@
 /**
  * Created by Wayuki on 03-Feb-17 0003.
  */
+import { routerActions } from 'react-router-redux';
 import { TOPIC_ACTION_TYPES } from './actionTypes';
-import { setNotification, setRedirect } from './appAction';
+import { setNotification } from './appAction';
 import * as helpers from '../helpers/helpers';
 
 const processingSaveTopic = isSavingTopic => ({
@@ -45,79 +46,88 @@ export const handleFormFieldChange = (key, value) => ({
 
 export const saveTopic = () => (
     (dispatch, getState, getFirebase) => {
-        const { coursesPage: { editingTopicId, modal: { topic } } } = getState();
-
-        // Form Validation - Start
-        let hasError = false;
-        const msg = {};
-        if (topic.name.trim().length <= 0) {
-            hasError = true;
-            msg.name = 'No content';
-        }
-        // Form Validation - End
-        if (hasError) {
-            dispatch(setErrorMessage(msg));
+        const firebase = getFirebase();
+        if (firebase.auth().currentUser) {
+            const { coursesPage: { editingTopicId, modal: { topic } } } = getState();
+            // Form Validation - Start
+            let hasError = false;
+            const msg = {};
+            if (topic.name.trim().length <= 0) {
+                hasError = true;
+                msg.name = 'No content';
+            }
+            // Form Validation - End
+            if (hasError) {
+                dispatch(setErrorMessage(msg));
+            } else {
+                dispatch(processingSaveTopic(true));
+                const topicId = editingTopicId || helpers.generateId(topic.name);
+                firebase.helpers.set(`topics/${topicId}`, topic)
+                    .then(() => {
+                        dispatch(setNotification('success', 'Topic Saved.'));
+                        dispatch(routerActions.push(`/courses/${topicId}`));
+                        dispatch(hideForm());
+                        dispatch(processingSaveTopic(false));
+                    }).catch((err) => {
+                        dispatch(setNotification('error', err.message));
+                        dispatch(processingSaveTopic(false));
+                    });
+            }
         } else {
-            const firebase = getFirebase();
-            dispatch(processingSaveTopic(true));
-            const topicId = editingTopicId || helpers.generateId(topic.name);
-            firebase.helpers.set(`topics/${topicId}`, topic)
-                .then(() => {
-                    dispatch(setNotification('success', 'Topic Saved.'));
-                    dispatch(setRedirect(`/courses/${topicId}`));
-                    dispatch(hideForm());
-                    dispatch(processingSaveTopic(false));
-                }).catch((err) => {
-                    dispatch(setNotification('error', err.message));
-                    dispatch(processingSaveTopic(false));
-                });
+            dispatch(setNotification('error', 'You are not authenticated. Please Login.'));
+            dispatch(routerActions.push('/login'));
         }
     }
 );
 
 export const deleteTopic = topicIds => (
     (dispatch, getState, getFirebase) => {
-        const { coursesPage: { editingTopicId } } = getState();
         const firebase = getFirebase();
-        const nextTopicIndex = topicIds.indexOf(editingTopicId) + 1;
-        let uri = '/';
-        if (!topicIds || topicIds.length <= 1) {
-            uri = '/courses';
-        } else if (nextTopicIndex >= topicIds.length) {
-            uri = `/courses/${topicIds[0]}`;
+        if (firebase.auth().currentUser) {
+            const { coursesPage: { editingTopicId } } = getState();
+            const nextTopicIndex = topicIds.indexOf(editingTopicId) + 1;
+            let uri = '/';
+            if (!topicIds || topicIds.length <= 1) {
+                uri = '/courses';
+            } else if (nextTopicIndex >= topicIds.length) {
+                uri = `/courses/${topicIds[0]}`;
+            } else {
+                uri = `/courses/${topicIds[nextTopicIndex]}`;
+            }
+            dispatch(processingDeleteTopic(true));
+            firebase.helpers.remove(`topics/${editingTopicId}`)
+                .then(() => (
+                    firebase.database()
+                        .ref('courses')
+                        .orderByChild('topic')
+                        .equalTo(editingTopicId)
+                        .once('value')
+                ))
+                .then((snapshot) => {
+                    if (snapshot.val()) {
+                        const coursesWithDeletedTopicId = Object.keys(snapshot.val());
+                        const updates = {};
+                        coursesWithDeletedTopicId.forEach((courseId) => {
+                            updates[`/${courseId}`] = null;
+                        });
+                        return firebase.database().ref('courses').update(updates);
+                    }
+                    return true;
+                })
+                .then(() => {
+                    dispatch(setNotification('success', 'Topic Deleted.'));
+                    dispatch(routerActions.push(uri));
+                    dispatch(hideForm());
+                    dispatch(processingDeleteTopic(false));
+                })
+                .catch((err) => {
+                    dispatch(setNotification('error', err.message));
+                    dispatch(processingDeleteTopic(false));
+                });
         } else {
-            uri = `/courses/${topicIds[nextTopicIndex]}`;
+            dispatch(setNotification('error', 'You are not authenticated. Please Login.'));
+            dispatch(routerActions.push('/login'));
         }
-        dispatch(processingDeleteTopic(true));
-        firebase.helpers.remove(`topics/${editingTopicId}`)
-            .then(() => (
-                firebase.database()
-                    .ref('courses')
-                    .orderByChild('topic')
-                    .equalTo(editingTopicId)
-                    .once('value')
-            ))
-            .then((snapshot) => {
-                if (snapshot.val()) {
-                    const coursesWithDeletedTopicId = Object.keys(snapshot.val());
-                    const updates = {};
-                    coursesWithDeletedTopicId.forEach((courseId) => {
-                        updates[`/${courseId}`] = null;
-                    });
-                    return firebase.database().ref('courses').update(updates);
-                }
-                return true;
-            })
-            .then(() => {
-                dispatch(setNotification('success', 'Topic Deleted.'));
-                dispatch(setRedirect(uri));
-                dispatch(hideForm());
-                dispatch(processingDeleteTopic(false));
-            })
-            .catch((err) => {
-                dispatch(setNotification('error', err.message));
-                dispatch(processingDeleteTopic(false));
-            });
     }
 );
 

@@ -16,7 +16,9 @@ import NavLink from '../common/NavLink.jsx';
 import ModalContainer from '../common/ModalContainer.jsx';
 import TopicForm from './TopicForm.jsx';
 
-const { isLoaded, isEmpty, dataToJS } = helpers;
+import { VisibleToUser } from '../../auth/auth';
+
+const { isLoaded, isEmpty, dataToJS, pathToJS } = helpers;
 
 @firebaseConnect([
     'topics',
@@ -24,6 +26,7 @@ const { isLoaded, isEmpty, dataToJS } = helpers;
 @connect(
     ({ firebase, coursesPage }) => ({
         topics: dataToJS(firebase, 'topics'),
+        auth: pathToJS(firebase, 'auth'),
         ...coursesPage,
     }),
     dispatch => ({
@@ -34,6 +37,9 @@ const { isLoaded, isEmpty, dataToJS } = helpers;
 class CoursesPage extends Component {
 
     static propTypes = {
+        auth: PropTypes.shape({
+            uid: PropTypes.string.isRequired,
+        }),
         children: PropTypes.element,
         params: PropTypes.shape({
             topic: PropTypes.string,
@@ -72,15 +78,18 @@ class CoursesPage extends Component {
             <div />
         ),
         topics: undefined,
+        auth: null,
     };
 
     showForm = (e, topicId) => {
         e.preventDefault();
-        if (topicId) {
-            const topic = this.props.topics[topicId];
-            this.props.actions.showForm(topic, `Edit ${topic.name}`, 'Save Changes', topicId);
-        } else {
-            this.props.actions.showForm();
+        if (this.props.auth && this.props.auth !== null) {
+            if (topicId) {
+                const topic = this.props.topics[topicId];
+                this.props.actions.showForm(topic, `Edit ${topic.name}`, 'Save Changes', topicId);
+            } else {
+                this.props.actions.showForm();
+            }
         }
     };
 
@@ -165,39 +174,61 @@ class CoursesPage extends Component {
                                 </li>
                             ))
                         }
-                        <li className="add-topic"><a href="/" onClick={e => this.showForm(e)}>+ Add Topic</a></li>
+                        {
+                            React.createElement(
+                                VisibleToUser(
+                                    () => (
+                                        <li className="add-topic">
+                                            <a href="/" onClick={e => this.showForm(e)}>+ Add Topic</a>
+                                        </li>
+                                    ),
+                                ),
+                            )
+                        }
                     </ul>
                 </div>
                 { children && React.cloneElement(children, { topics }) }
-                <div className="btn-container text-right">
-                    <ButtonGroup>
-                        {
-                            isLoaded(topics) &&
-                            this.props.params.topic &&
-                            Object.keys(topics).includes(this.props.params.topic) &&
-                            <Button
-                                onClick={e => this.showForm(e, this.props.params.topic)}
-                                type="button"
-                                outline
-                                color="primary"
-                            >
-                                Edit Topic
-                            </Button>
-                        }
-                        {
-                            isLoaded(topics) &&
-                            !isEmpty(topics) &&
-                            Object.keys(topics).length > 0 &&
-                            <Button
-                                onClick={e => courseActions.showForm()}
-                                type="button"
-                                color="primary"
-                            >
-                                Add Course
-                            </Button>
-                        }
-                    </ButtonGroup>
-                </div>
+                {
+                    React.createElement(
+                        VisibleToUser(
+                            () => (
+                                <div className="btn-container text-right">
+                                    <ButtonGroup>
+                                        {
+                                            isLoaded(topics) &&
+                                            this.props.params.topic &&
+                                            Object.keys(topics).includes(this.props.params.topic) &&
+                                            <Button
+                                                onClick={
+                                                    e => this.showForm(e, this.props.params.topic)
+                                                }
+                                                type="button"
+                                                outline
+                                                color="primary"
+                                            >
+                                                Edit Topic
+                                            </Button>
+                                        }
+                                        {
+                                            isLoaded(topics) && !isEmpty(topics) &&
+                                            Object.keys(topics).length > 0 &&
+                                            <Button
+                                                onClick={
+                                                    this.props.auth && this.props.auth !== null ?
+                                                        () => courseActions.showForm() : () => {}
+                                                }
+                                                type="button"
+                                                color="primary"
+                                            >
+                                                Add Course
+                                            </Button>
+                                        }
+                                    </ButtonGroup>
+                                </div>
+                            ),
+                        ),
+                    )
+                }
                 <ModalContainer
                     isOpen={editing}
                     toggle={actions.hideForm}
@@ -211,10 +242,16 @@ class CoursesPage extends Component {
                         />
                     }
                     footerContent={
-                        <ButtonGroup>
-                            { this.renderFormDeleteButton() }
-                            { this.renderFormSubmitButton() }
-                        </ButtonGroup>
+                        React.createElement(
+                            VisibleToUser(
+                                () => (
+                                    <ButtonGroup>
+                                        { this.renderFormDeleteButton() }
+                                        { this.renderFormSubmitButton() }
+                                    </ButtonGroup>
+                                ),
+                            ),
+                        )
                     }
                 />
             </div>

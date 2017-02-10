@@ -16,14 +16,17 @@ import ModalContainer from '../../common/ModalContainer.jsx';
 import Course from './Course.jsx';
 import CourseForm from './CourseForm.jsx';
 
-const { isLoaded, isEmpty, dataToJS } = helpers;
+import { VisibleToUser } from '../../../auth/auth';
+
+const { isLoaded, isEmpty, dataToJS, pathToJS } = helpers;
 
 @firebaseConnect(({ params: { topic = '' } }) => ([
-    `courses#orderByChild=topic&equalTo=${topic}`,
+    topic ? `courses#orderByChild=topic&equalTo=${topic}` : 'courses',
 ]))
 @connect(
     ({ firebase, coursePage }) => ({
         courses: dataToJS(firebase, 'courses'),
+        auth: pathToJS(firebase, 'auth'),
         ...coursePage,
     }),
     dispatch => ({
@@ -33,6 +36,9 @@ const { isLoaded, isEmpty, dataToJS } = helpers;
 class CoursePage extends Component {
 
     static propTypes = {
+        auth: PropTypes.shape({
+            uid: PropTypes.string.isRequired,
+        }),
         topics: PropTypes.objectOf(PropTypes.shape({
             name: PropTypes.string.isRequired,
         }).isRequired),
@@ -73,14 +79,17 @@ class CoursePage extends Component {
     static defaultProps = {
         topics: undefined,
         courses: undefined,
+        auth: null,
     };
 
     showForm = (courseId = null) => {
-        if (courseId) {
-            const course = this.props.courses[courseId];
-            this.props.actions.showForm(course, `Edit ${course.title}`, 'Save Changes', courseId);
-        } else {
-            this.props.actions.showForm();
+        if (this.props.auth && this.props.auth !== null) {
+            if (courseId) {
+                const course = this.props.courses[courseId];
+                this.props.actions.showForm(course, `Edit ${course.title}`, 'Save Changes', courseId);
+            } else {
+                this.props.actions.showForm();
+            }
         }
     } ;
 
@@ -195,10 +204,16 @@ class CoursePage extends Component {
                         />
                     }
                     footerContent={
-                        <ButtonGroup>
-                            { this.renderFormDeleteButton() }
-                            { this.renderFormSubmitButton() }
-                        </ButtonGroup>
+                        React.createElement(
+                            VisibleToUser(
+                                () => (
+                                    <ButtonGroup>
+                                        { this.renderFormDeleteButton() }
+                                        { this.renderFormSubmitButton() }
+                                    </ButtonGroup>
+                                ),
+                            ),
+                        )
                     }
                 />
             </div>

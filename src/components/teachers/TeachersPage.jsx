@@ -13,7 +13,9 @@ import Teacher from './teacher/Teacher.jsx';
 import TeacherForm from './TeacherForm.jsx';
 import ModalContainer from '../common/ModalContainer.jsx';
 
-const { isLoaded, isEmpty, dataToJS } = helpers;
+import { VisibleToUser } from '../../auth/auth';
+
+const { isLoaded, isEmpty, dataToJS, pathToJS } = helpers;
 
 @firebaseConnect([
     'teachers',
@@ -21,6 +23,7 @@ const { isLoaded, isEmpty, dataToJS } = helpers;
 @connect(
     ({ firebase, teacherPage }) => ({
         teachers: dataToJS(firebase, 'teachers'),
+        auth: pathToJS(firebase, 'auth'),
         ...teacherPage,
     }),
     dispatch => ({
@@ -30,6 +33,9 @@ const { isLoaded, isEmpty, dataToJS } = helpers;
 class TeachersPage extends Component {
 
     static propTypes = {
+        auth: PropTypes.shape({
+            uid: PropTypes.string.isRequired,
+        }),
         teachers: PropTypes.objectOf(PropTypes.shape({
             name: PropTypes.string.isRequired,
             bio: PropTypes.string.isRequired,
@@ -60,14 +66,17 @@ class TeachersPage extends Component {
 
     static defaultProps = {
         teachers: undefined,
+        auth: null,
     };
 
     showForm = (teacherId = null) => {
-        if (teacherId) {
-            const teacher = this.props.teachers[teacherId];
-            this.props.actions.showForm(teacher, `Edit ${teacher.name}`, 'Save Changes', teacherId);
-        } else {
-            this.props.actions.showForm();
+        if (this.props.auth && this.props.auth !== null) {
+            if (teacherId) {
+                const teacher = this.props.teachers[teacherId];
+                this.props.actions.showForm(teacher, `Edit ${teacher.name}`, 'Save Changes', teacherId);
+            } else {
+                this.props.actions.showForm();
+            }
         }
     };
 
@@ -169,9 +178,11 @@ class TeachersPage extends Component {
                         }
                     </ReactCSSTransitionGroup>
                 </ul>
-                <div className="btn-container text-right">
-                    <Button outline color="primary" onClick={() => this.showForm()}>Add Teacher</Button>
-                </div>
+                { React.createElement(VisibleToUser(() => (
+                    <div className="btn-container text-right">
+                        <Button outline color="primary" onClick={() => this.showForm()}>Add Teacher</Button>
+                    </div>
+                ))) }
                 <ModalContainer
                     isOpen={editing}
                     toggle={hideForm}
@@ -186,12 +197,18 @@ class TeachersPage extends Component {
                             errors={modal.errors}
                         />
                     )}
-                    footerContent={(
-                        <ButtonGroup>
-                            { this.renderFormDeleteButton() }
-                            { this.renderFormSubmitButton() }
-                        </ButtonGroup>
-                    )}
+                    footerContent={
+                        React.createElement(
+                            VisibleToUser(
+                                () => (
+                                    <ButtonGroup>
+                                        { this.renderFormDeleteButton() }
+                                        { this.renderFormSubmitButton() }
+                                    </ButtonGroup>
+                                ),
+                            ),
+                        )
+                    }
                 />
             </div>
         );

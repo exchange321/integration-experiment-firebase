@@ -1,7 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { firebaseConnect, helpers } from 'react-redux-firebase';
-import { Route, Redirect, Router, browserHistory } from 'react-router';
+import { Route, IndexRoute, Redirect, Router, browserHistory } from 'react-router';
 import { syncHistoryWithStore } from 'react-router-redux';
 import App from './components/App.jsx';
 
@@ -22,7 +20,8 @@ const AppRouter = ({ store }) => {
                 <Route path="about" component={AboutPage} />
                 <Route path="teachers" component={TeachersPage} />
                 <Route path="courses" component={CoursesPage}>
-                    <Route path=":topic" component={CoursePage} />
+                    <IndexRoute component={CoursePage} />
+                    <Route path="(:topic)" component={CoursePage} />
                 </Route>
                 <Route path="login" component={LoginPage} />
                 <Route path="logout" component={LogoutPage} />

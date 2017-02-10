@@ -1,6 +1,7 @@
 /**
  * Created by Wayuki on 03-Feb-17 0003.
  */
+import { routerActions } from 'react-router-redux';
 import { TEACHER_ACTION_TYPES } from './actionTypes';
 import { setNotification } from './appAction';
 import * as helpers from '../helpers/helpers';
@@ -53,58 +54,68 @@ export const handleFormFieldChange = (key, value) => (
 
 export const saveTeacher = () => (
     (dispatch, getState, getFirebase) => {
-        const { teacherPage: { editingTeacherId, modal: { teacher } } } = getState();
+        const firebase = getFirebase();
+        if (firebase.auth().currentUser) {
+            const { teacherPage: { editingTeacherId, modal: { teacher } } } = getState();
 
-        // Form Validation - Start
-        let hasError = false;
-        const msg = {};
-        if (teacher.name.trim().length <= 0) {
-            hasError = true;
-            msg.name = 'No content';
-        }
-        if (teacher.bio.trim().length <= 0) {
-            hasError = true;
-            msg.bio = 'No content';
-        }
-        if (teacher.img_src.trim().length <= 0) {
-            hasError = true;
-            msg.img_src = 'No content';
-        }
-        // Form Validation - End
+            // Form Validation - Start
+            let hasError = false;
+            const msg = {};
+            if (teacher.name.trim().length <= 0) {
+                hasError = true;
+                msg.name = 'No content';
+            }
+            if (teacher.bio.trim().length <= 0) {
+                hasError = true;
+                msg.bio = 'No content';
+            }
+            if (teacher.img_src.trim().length <= 0) {
+                hasError = true;
+                msg.img_src = 'No content';
+            }
+            // Form Validation - End
 
-        if (hasError) {
-            dispatch(setErrorMessage(msg));
+            if (hasError) {
+                dispatch(setErrorMessage(msg));
+            } else {
+                dispatch(processingSaveTeacher(true));
+                const teacherId = editingTeacherId || helpers.generateId(teacher.name);
+                firebase.helpers.set(`teachers/${teacherId}`, teacher)
+                    .then(() => {
+                        dispatch(setNotification('success', 'Teacher Saved.'));
+                        dispatch(hideForm());
+                        dispatch(processingSaveTeacher(false));
+                    }).catch((err) => {
+                        dispatch(setNotification('error', err.message));
+                        dispatch(processingSaveTeacher(false));
+                    });
+            }
         } else {
-            const firebase = getFirebase();
-            dispatch(processingSaveTeacher(true));
-            const teacherId = editingTeacherId || helpers.generateId(teacher.name);
-            firebase.helpers.set(`teachers/${teacherId}`, teacher)
-                .then(() => {
-                    dispatch(setNotification('success', 'Teacher Saved.'));
-                    dispatch(hideForm());
-                    dispatch(processingSaveTeacher(false));
-                }).catch((err) => {
-                    dispatch(setNotification('error', err.message));
-                    dispatch(processingSaveTeacher(false));
-                });
+            dispatch(setNotification('error', 'You are not authenticated. Please Login.'));
+            dispatch(routerActions.push('/login'));
         }
     }
 );
 
 export const deleteTeacher = () => (
     (dispatch, getState, getFirebase) => {
-        const { teacherPage: { editingTeacherId } } = getState();
         const firebase = getFirebase();
-        dispatch(processingDeleteTeacher(true));
-        firebase.helpers.remove(`teachers/${editingTeacherId}`)
-            .then(() => {
-                dispatch(setNotification('success', 'Teacher Deleted.'));
-                dispatch(hideForm());
-                dispatch(processingDeleteTeacher(false));
-            }).catch((err) => {
-                dispatch(setNotification('error', err.message));
-                dispatch(processingDeleteTeacher(false));
-            });
+        if (firebase.auth().currentUser) {
+            const { teacherPage: { editingTeacherId } } = getState();
+            dispatch(processingDeleteTeacher(true));
+            firebase.helpers.remove(`teachers/${editingTeacherId}`)
+                .then(() => {
+                    dispatch(setNotification('success', 'Teacher Deleted.'));
+                    dispatch(hideForm());
+                    dispatch(processingDeleteTeacher(false));
+                }).catch((err) => {
+                    dispatch(setNotification('error', err.message));
+                    dispatch(processingDeleteTeacher(false));
+                });
+        } else {
+            dispatch(setNotification('error', 'You are not authenticated. Please Login.'));
+            dispatch(routerActions.push('/login'));
+        }
     }
 );
 
