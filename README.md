@@ -2,8 +2,10 @@
 An experiment of integrating React, Redux, React Router, React Native, and Firebase.
 
 ## Current Status:
-* Finished User Authentication (Firebase + React Web)
-    
+* Integrating React Native
+   * Problem: Can't share reducers and actions across apps due to babel not transpiling files not under project folder.
+   * Solution: Separate WebApp and MobileApp first
+
 ## Finished:
 - [x] Initialization
 - [x] Reformating Code
@@ -16,6 +18,7 @@ An experiment of integrating React, Redux, React Router, React Native, and Fireb
     - [ ] React Native Integration
     
 * Optional:
+    - [ ] Sharing Redux Store between WebApp and MobileApp
 
 ## Firebase Database Format & Rules
 ```
