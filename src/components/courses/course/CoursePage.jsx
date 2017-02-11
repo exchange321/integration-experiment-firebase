@@ -160,6 +160,7 @@ class CoursePage extends Component {
 
     render() {
         const { courses, topics, editing, modal, editingCourseId, actions } = this.props;
+        console.log(courses);
         return (
             <div>
                 <ul>

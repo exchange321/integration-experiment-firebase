@@ -10,7 +10,7 @@ export default {
     debug: true,
     devtool: 'source-map',
     noInfo: false,
-    entry: './src/index.jsx',
+    entry: './index.web.js',
     target: 'web',
     output: {
         path: `${__dirname}/dist`, // Note: Physical files are only output by the production build task `npm run build`.
@@ -29,7 +29,7 @@ export default {
     ],
     module: {
         loaders: [
-            { test: /\.(js|jsx)$/, include: path.join(__dirname, 'src'), loaders: ['babel'] },
+            { test: /\.(js|jsx)$/, include: [path.join(__dirname, 'index.web.js'), path.join(__dirname, 'src')], loaders: ['babel'] },
             { test: /(\.css)$/, loader: ExtractTextPlugin.extract('css!postcss?sourceMap') },
             { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: 'file' },
             { test: /\.(woff|woff2)$/, loader: 'url?prefix=font/&limit=5000' },

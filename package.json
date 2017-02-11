@@ -6,7 +6,7 @@
     "native:start": "node node_modules/react-native/local-cli/cli.js start",
     "native:test": "jest",
     "prestart": "babel-node tools/startMessage.js",
-    "start": "npm-run-all --parallel lint:watch test:watch open:src",
+    "start": "npm-run-all --parallel lint:watch open:src",
     "open:src": "babel-node tools/srcServer.js",
     "lint": "node_modules/.bin/esw webpack.config.* src tools",
     "lint:watch": "npm run lint -- --watch",
