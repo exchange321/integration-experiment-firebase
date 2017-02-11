@@ -1,3 +1,0 @@
-rootProject.name = 'react_redux_react_native_firebase'
-
-include ':app'
