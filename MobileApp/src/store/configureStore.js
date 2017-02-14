@@ -1,0 +1,17 @@
+/**
+ * Created by Wayuki on 14-Feb-17.
+ */
+import { createStore, applyMiddleware } from 'redux';
+import thunk from 'redux-thunk';
+
+import rootReducer from '../reducers';
+
+const configureStore = initialState => (
+    createStore(
+        rootReducer,
+        initialState,
+        applyMiddleware(thunk),
+    )
+);
+
+export default configureStore;

@@ -10,6 +10,7 @@ const Sidebar = ({ closeDrawer }) => (
     <View sidebar>
         <NavItem to={Actions.home} closeDrawer={closeDrawer}>Home</NavItem>
         <NavItem to={Actions.about} closeDrawer={closeDrawer}>About</NavItem>
+        <NavItem to={Actions.teacher} closeDrawer={closeDrawer}>Teacher</NavItem>
     </View>
 );
 
