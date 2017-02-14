@@ -14,10 +14,11 @@ An experiment of integrating React, Redux, React Router, React Native, and Fireb
     
 ## Todos:
 * Core: 
-    - [ ] React Native Integration
+    - [ ] React Native Integration (Content Modification not included)
     
 * Optional:
-    - [ ] Sharing Redux Store between WebApp and MobileApp
+    - [ ] Content Modification in Native App
+    - [ ] Sharing Code between Web and Native Apps
     
 ## Records:
 * As react-redux-firebase is not compatible with React Native and I could not make react-native-firestack work, raw Firebase is used.
