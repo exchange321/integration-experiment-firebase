@@ -24,7 +24,9 @@
         "import/extensions": [2, "never", {
             "css": "always",
             "jsx": "always"
-        }]
+        }],
+        "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
+        "no-underscore-dangle": [0]
 	},
 	"plugins": [
 		"react"
