@@ -11,7 +11,7 @@ import TeacherPage from './components/teachers/TeacherPage';
 
 const AppRouter = () => (
     <Router>
-        <Scene key="root" component={App} open={false}>
+        <Scene key="root" component={App}>
             <Scene key="home" component={HomePage} title="Home" />
             <Scene key="about" component={AboutPage} title="About" />
             <Scene key="teacher" component={TeacherPage} title="Teachers" />

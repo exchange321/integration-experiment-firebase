@@ -3,21 +3,36 @@
  */
 import React, { Component, PropTypes } from 'react';
 import { Drawer, Container } from 'native-base';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import { DefaultRenderer } from 'react-native-router-flux';
+
+import * as appActions from '../actions/appAction';
 
 import AppHeader from './common/AppHeader';
 import Sidebar from './common/Sidebar';
 
+@connect(
+    ({ appPage }) => ({
+        ...appPage,
+    }),
+    dispatch => ({
+        actions: bindActionCreators(appActions, dispatch),
+    }),
+)
 class App extends Component {
 
     static propTypes = {
+        drawerOpen: PropTypes.bool.isRequired,
         navigationState: PropTypes.shape({
-            open: PropTypes.bool.isRequired,
             children: PropTypes.arrayOf(PropTypes.shape({
                 title: PropTypes.string.isRequired,
             })).isRequired,
         }).isRequired,
         onNavigate: PropTypes.func.isRequired,
+        actions: PropTypes.shape({
+            triggerDrawer: PropTypes.func.isRequired,
+        }).isRequired,
     };
 
     render() {
@@ -25,10 +40,9 @@ class App extends Component {
         const activePage = state.children[state.children.length - 1];
         return (
             <Drawer
-                ref={(ref) => { this._drawer = ref; }}
-                open={state.open}
+                open={this.props.drawerOpen}
                 type="overlay"
-                content={<Sidebar closeDrawer={() => this._drawer._root.close()} />}
+                content={<Sidebar closeDrawer={() => this.props.actions.triggerDrawer(false)} />}
                 tapToClose
                 openDrawerOffset={0.2}
                 panCloseMask={0.2}
@@ -40,7 +54,10 @@ class App extends Component {
                 })}
             >
                 <Container>
-                    <AppHeader title={activePage.title} />
+                    <AppHeader
+                        title={activePage.title}
+                        openDrawer={() => this.props.actions.triggerDrawer(true)}
+                    />
                     <DefaultRenderer
                         navigationState={activePage}
                         onNavigate={this.props.onNavigate}

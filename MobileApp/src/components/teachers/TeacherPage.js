@@ -54,7 +54,9 @@ class TeacherPage extends Component {
                             />
                         }
                     </View>
-                    <Text>Swipe LEFT and RIGHT for next teacher.</Text>
+                    <View>
+                        <Text> Swipe LEFT or RIGHT </Text>
+                    </View>
                 </View>
             </Container>
         );

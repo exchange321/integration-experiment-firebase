@@ -5,4 +5,7 @@ export default {
     teacherPage: {
         teachers: {},
     },
+    appPage: {
+        drawerOpen: false,
+    },
 };

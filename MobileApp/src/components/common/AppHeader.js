@@ -11,17 +11,13 @@ import {
     Right,
     Icon,
 } from 'native-base';
-import { Actions } from 'react-native-router-flux';
 
-const AppHeader = ({ title }) => (
+const AppHeader = ({ title, openDrawer }) => (
     <Header>
         <Left>
             <Button
                 transparent
-                onPress={() => Actions.refresh({
-                    key: 'root',
-                    open: true,
-                })}
+                onPress={openDrawer}
             >
                 <Icon name="menu" />
             </Button>
@@ -35,6 +31,7 @@ const AppHeader = ({ title }) => (
 
 AppHeader.propTypes = {
     title: PropTypes.string.isRequired,
+    openDrawer: PropTypes.func.isRequired,
 };
 
 export default AppHeader;

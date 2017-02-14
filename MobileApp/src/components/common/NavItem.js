@@ -3,12 +3,13 @@
  */
 import React, { PropTypes } from 'react';
 import { ListItem, Text, Body, Right, Icon } from 'native-base';
+import { Actions } from 'react-native-router-flux';
 
 const NavItem = ({ children, to, closeDrawer }) => (
     <ListItem
         onPress={() => {
             closeDrawer();
-            to();
+            Actions[to]();
         }}
     >
         <Body>
@@ -22,7 +23,7 @@ const NavItem = ({ children, to, closeDrawer }) => (
 
 NavItem.propTypes = {
     children: PropTypes.string.isRequired,
-    to: PropTypes.func.isRequired,
+    to: PropTypes.string.isRequired,
     closeDrawer: PropTypes.func.isRequired,
 };
 

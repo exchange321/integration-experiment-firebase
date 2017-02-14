@@ -12,7 +12,6 @@ const theme = {
         // SIDEBAR - START
         '.sidebar': {
             flex: 1,
-            padding: 15,
             backgroundColor: 'white',
         },
         // SIDEBAR - END
