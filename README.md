@@ -3,15 +3,14 @@ An experiment of integrating React, Redux, React Router, React Native, and Fireb
 
 ## Current Status:
 * Integrating React Native
-   * Problem: Can't share reducers and actions across apps due to babel not transpiling files not under project folder.
-   * Solution: Separate WebApp and MobileApp first
+   * Added TeacherPage (React Native)
 
 ## Finished:
-- [x] Initialization
-- [x] Reformating Code
-- [x] Redux Integration (React Web)
-- [x] Google Firebase Integration (React Web)
-- [x] User Authentication (Firebase + React Web)
+- [x] ~~Initialization~~
+- [x] ~~Reformating Code~~
+- [x] ~~Redux Integration (React Web)~~
+- [x] ~~Google Firebase Integration (React Web)~~
+- [x] ~~User Authentication (Firebase + React Web)~~
     
 ## Todos:
 * Core: 
@@ -19,6 +18,11 @@ An experiment of integrating React, Redux, React Router, React Native, and Fireb
     
 * Optional:
     - [ ] Sharing Redux Store between WebApp and MobileApp
+    
+## Records:
+* As react-redux-firebase is not compatible with React Native and I could not make react-native-firestack work, raw Firebase is used.
+* As raw Firebase's authentication does not support React Native, content modification in mobile version is postponed.
+* As the ways used to access Google Firebase in web and mobile versions are different, sharing the same store/reducers/actions seem not to be practical anymore. Therefore, this is postponed till react-redux-firebase supports React Native.
 
 ## Firebase Database Format & Rules
 ```
