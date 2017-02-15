@@ -2,8 +2,8 @@
 An experiment of integrating React, Redux, React Router, React Native, and Firebase.
 
 ## Current Status:
-* Integrating React Native
-   * Added TeacherPage (React Native)
+* React Native Integration Completed (Content Modification not included)
+* Project on-hold until better Google Firebase library available for React Native
 
 ## Finished:
 - [x] ~~Initialization~~
@@ -11,10 +11,10 @@ An experiment of integrating React, Redux, React Router, React Native, and Fireb
 - [x] ~~Redux Integration (React Web)~~
 - [x] ~~Google Firebase Integration (React Web)~~
 - [x] ~~User Authentication (Firebase + React Web)~~
+- [x] ~~React Native Integration (Content Modification not included)~~
     
 ## Todos:
 * Core: 
-    - [ ] React Native Integration (Content Modification not included)
     
 * Optional:
     - [ ] Content Modification in Native App
