@@ -9,7 +9,7 @@ const Teachers = firebaseApp.database().ref('teachers');
 export const loadTeachers = () => (
     dispatch => (
         Teachers.on('value', (snapshot) => {
-            const teachers = snapshot.val();
+            const teachers = snapshot.val() || {};
             dispatch({
                 type: TEACHER_ACTION_TYPES.LOAD_TEACHERS,
                 teachers,

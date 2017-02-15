@@ -11,7 +11,8 @@ const Sidebar = ({ closeDrawer }) => (
         <Image style={{ resizeMode: 'cover', height: 150, width: null }} source={require('../../images/reactive-nativingitup-png-800x600_q96.png')} />
         <NavItem to="home" closeDrawer={closeDrawer}>Home</NavItem>
         <NavItem to="about" closeDrawer={closeDrawer}>About</NavItem>
-        <NavItem to="teacher" closeDrawer={closeDrawer}>Teacher</NavItem>
+        <NavItem to="teachers" closeDrawer={closeDrawer}>Teacher</NavItem>
+        <NavItem to="courses" closeDrawer={closeDrawer}>Courses</NavItem>
     </View>
 );
 

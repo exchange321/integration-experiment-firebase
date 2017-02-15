@@ -8,4 +8,11 @@ export default {
     appPage: {
         drawerOpen: false,
     },
+    coursesPage: {
+        topics: {},
+        activeTopic: '',
+    },
+    coursePage: {
+        courses: {},
+    }
 };
