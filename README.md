@@ -4,6 +4,7 @@ An experiment of integrating React, Redux, React Router, React Native, and Fireb
 ## Current Status:
 * React Native Integration Completed (Content Modification not included)
 * Project on-hold until better Google Firebase library available for React Native
+* Moving on to next experiment -> [Integration Experiment (Meteor)](https://github.com/exchange321/integration-experiment-meteor)
 
 ## Finished:
 - [x] ~~Initialization~~
